@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api ,_
 from odoo.osv import expression
 
 from odoo.exceptions import ValidationError
@@ -68,7 +68,27 @@ class OrmTask(models.Model):
             maths_tasks = tasks.filtered(lambda t:t.category_id.name=='Maths')
 
             print('Maths >>>>>>>>>>>>>>>>>>>>>>',maths_tasks)
+            
+    
+    def unlink(self):
+        for rec in self:
+            if rec.is_done:
+                raise UserError(_("You cannot delete a completed task."))
+        return super(OrmTask,self).unlink()
+    
+    
+    def write(self, vals):
+        is_admin = self.env.user.has_group('base.group_system')
 
+        if vals and not is_admin and any(task.is_done for task in self):
+            raise UserError(_("You cannot modify a completed task."))
+
+        if vals.get('is_done') and 'end_date' not in vals:
+            if any(not task.end_date for task in self):
+                vals = dict(vals)
+                vals['end_date'] = date.today()
+
+        return super().write(vals)
 
 
 
