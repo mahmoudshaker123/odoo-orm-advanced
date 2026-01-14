@@ -1,0 +1,48 @@
+<odoo>
+
+    <!-- Tree View -->
+    <record id="view_orm_category_tree" model="ir.ui.view">
+        <field name="name">orm.category.tree</field>
+        <field name="model">orm.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_orm_category_form" model="ir.ui.view">
+        <field name="name">orm.category.form</field>
+        <field name="model">orm.category</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_orm_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">orm.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_orm_root" name="ORM Training" web_icon="orm_training,static/description/icon.png"/>
+    <menuitem
+        id="menu_orm_category"
+        name="Categories"
+        parent="menu_orm_root"
+        action="action_orm_category"
+        sequence="20"
+    />
+
+</odoo>
