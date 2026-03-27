@@ -1,8 +1,11 @@
 from odoo import models, fields, api ,_
 from odoo.osv import expression
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 from datetime import date ,timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class OrmTask(models.Model):
@@ -44,6 +47,7 @@ class OrmTask(models.Model):
 
     @api.model
     def default_get(self, fields_list):
+        logger.info("Tracking: default_get method called with fields_list: %s", fields_list)
         res = super(OrmTask, self).default_get(fields_list)
         res['description']='Hello From Odoo'
         res['start_date']=date.today()
@@ -67,7 +71,7 @@ class OrmTask(models.Model):
             high_tasks= tasks.filtered(lambda t:t.priority=='high')
             maths_tasks = tasks.filtered(lambda t:t.category_id.name=='Maths')
 
-            print('Maths >>>>>>>>>>>>>>>>>>>>>>',maths_tasks)
+            print('Maths >>>>>>>>>>>>>>>>>>>>>>',tasks)
             
     
     def unlink(self):
@@ -89,7 +93,4 @@ class OrmTask(models.Model):
                 vals['end_date'] = date.today()
 
         return super().write(vals)
-
-
-
 

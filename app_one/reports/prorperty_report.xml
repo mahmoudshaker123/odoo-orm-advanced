@@ -1,0 +1,176 @@
+
+<odoo>
+    <record id="custom_property_reports" model="report.paperformat">
+            <field name="name">Property Reports</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">20</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">96</field>
+        </record>
+
+    <record id="property_record" model="ir.actions.report">
+        <field name="name">Property Report</field>
+        <field name="model" >property</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="model_property"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">app_one.property_report_template</field>
+        <field name="paperformat_id" ref="app_one.custom_property_reports"/>
+
+    </record>
+
+
+<template id="property_report_template">
+    <t t-call="web.html_container">
+        <t t-call="web.basic_layout">
+
+            <style>
+                 @font-face {
+                    font-family: 'Cairo';
+                    src: url('/app_one/static/src/fonts/Cairo-Regular.ttf') format('truetype');
+                    font-weight: normal;
+                }
+
+                @font-face {
+                    font-family: 'Cairo';
+                    src: url('/app_one/static/src/fonts/Cairo-Bold.ttf') format('truetype');
+                    font-weight: bold;
+                }
+
+                body {
+                    font-family: 'Cairo', sans-serif;
+                }
+                .main-title {
+                    text-align: center;
+                    font-size: 28px;
+                    font-weight: bold;
+                    color: #1f2937;
+                    margin-bottom: 25px;
+                    letter-spacing: 1px;
+                }
+
+                .section-title {
+                    background: #111827;
+                    color: white;
+                    padding: 8px 12px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin-top: 25px;
+                }
+
+                .info-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+
+                .info-table td {
+                    padding: 8px 10px;
+                    border: 1px solid #e5e7eb;
+                    font-size: 13px;
+                }
+
+                .label {
+                    background: #f3f4f6;
+                    font-weight: bold;
+                    width: 20%;
+                }
+
+                .line-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+
+                .line-table th {
+                    background: #374151;
+                    color: white;
+                    padding: 10px;
+                    font-size: 13px;
+                }
+
+                .line-table td {
+                    border: 1px solid #e5e7eb;
+                    padding: 8px;
+                    font-size: 12px;
+                }
+
+                .total-area {
+                    text-align: right;
+                    font-weight: bold;
+                    margin-top: 10px;
+                    font-size: 13px;
+                }
+            </style>
+
+            <t t-foreach="docs" t-as="o">
+
+                <div class="main-title">
+                    Property Report
+                </div>
+
+                <!-- General Info -->
+                <div class="section-title">General Information</div>
+
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Name</td>
+                        <td><t t-esc="o.name"/></td>
+
+                        <td class="label">Postcode</td>
+                        <td><t t-esc="o.postcode"/></td>
+                    </tr>
+                </table>
+
+                <!-- Additional Info -->
+                <div class="section-title">Additional Information</div>
+
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Owner</td>
+                        <td><t t-esc="o.owner_id.name"/></td>
+
+                        <td class="label">Phone</td>
+                        <td><t t-esc="o.owner_phone"/></td>
+                    </tr>
+                </table>
+
+                <!-- Lines -->
+                <div class="section-title">Property Details</div>
+
+                <table class="line-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Area (m²)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="total_area" t-value="0"/>
+                        <t t-foreach="o.line_ids" t-as="line">
+                            <t t-set="total_area" t-value="total_area + line.area"/>
+                            <tr>
+                                <td><t t-esc="line.description"/></td>
+                                <td><t t-esc="line.area"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="total-area">
+                    Total Area: <t t-esc="total_area"/> m²
+                </div>
+
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>

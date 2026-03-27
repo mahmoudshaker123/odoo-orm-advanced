@@ -1,0 +1,19 @@
+<odoo>
+    <menuitem id="menu_orm_root" name="ORM Training" web_icon="orm_training,static/description/icon.png"/>
+    <menuitem
+        id="menu_orm_tasks"
+        name="Tasks"
+        parent="menu_orm_root"
+        action="action_orm_tasks"
+        sequence="10"
+
+    />
+    <menuitem
+        id="menu_orm_category"
+        name="Categories"
+        parent="menu_orm_root"
+        action="action_orm_category"
+        sequence="20"
+    />
+
+</odoo>

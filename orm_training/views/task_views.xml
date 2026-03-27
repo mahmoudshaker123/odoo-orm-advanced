@@ -29,7 +29,6 @@
                  </header>
                 <sheet>
                     <group>
-                        <!-- Title -->
                         <div class="oe_title">
                             <h1>
                                 <field name="title" placeholder="Task Title" nolabel="1"/>
@@ -59,12 +58,5 @@
         <field name="res_model">orm.task</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem
-        id="menu_orm_tasks"
-        name="Tasks"
-        parent="menu_orm_root"
-        action="action_orm_tasks"
-        sequence="10"
 
-    />
 </odoo>
