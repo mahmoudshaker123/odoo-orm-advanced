@@ -1,0 +1,115 @@
+/* Project Task Portal frontend styles */
+
+.o_pt_portal_tasks {
+    --pt-accent: #6b4f67;
+    --pt-accent-soft: #efe4ec;
+    --pt-ink: #243042;
+    --pt-muted: #667085;
+}
+
+.o_pt_tasks_hero {
+    background:
+        radial-gradient(circle at top right, rgba(107, 79, 103, 0.18), transparent 32%),
+        linear-gradient(135deg, #fffefe 0%, #f8f4f8 100%);
+    border: 1px solid rgba(107, 79, 103, 0.12);
+    border-radius: 24px;
+    box-shadow: 0 16px 40px rgba(36, 48, 66, 0.08);
+    overflow: hidden;
+}
+
+.o_pt_tasks_hero_content {
+    padding: 28px;
+}
+
+.o_pt_tasks_eyebrow {
+    display: inline-flex;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--pt-accent-soft);
+    color: var(--pt-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.o_pt_tasks_title {
+    color: var(--pt-ink);
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.o_pt_tasks_subtitle {
+    max-width: 720px;
+    color: var(--pt-muted);
+    font-size: 1rem;
+}
+
+.o_pt_tasks_badge {
+    min-width: 170px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(107, 79, 103, 0.14);
+    text-align: center;
+}
+
+.o_pt_tasks_badge_value {
+    display: block;
+    color: var(--pt-accent);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.o_pt_tasks_badge_label {
+    display: block;
+    margin-top: 4px;
+    color: var(--pt-muted);
+    font-size: 0.85rem;
+}
+
+.o_pt_tasks_list_wrap .table-responsive {
+    border: 1px solid rgba(36, 48, 66, 0.08);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(36, 48, 66, 0.06);
+}
+
+.o_pt_tasks_list_wrap .o_portal_my_doc_table {
+    margin-bottom: 0;
+}
+
+.o_pt_tasks_list_wrap .o_portal_my_doc_table thead th {
+    background: #faf7fb;
+    color: var(--pt-ink);
+    font-weight: 600;
+}
+
+.o_pt_tasks_list_wrap .o_portal_my_doc_table tbody tr:hover {
+    background: rgba(107, 79, 103, 0.04);
+}
+
+.o_pt_tasks_list_wrap a {
+    color: var(--pt-accent);
+}
+
+.o_pt_empty_state {
+    border: 1px solid rgba(107, 79, 103, 0.12);
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fff, #f8f4f8);
+    color: var(--pt-ink);
+    padding: 18px 20px;
+}
+
+@media (max-width: 767.98px) {
+    .o_pt_tasks_hero_content {
+        padding: 20px;
+    }
+
+    .o_pt_tasks_badge {
+        width: 100%;
+    }
+}

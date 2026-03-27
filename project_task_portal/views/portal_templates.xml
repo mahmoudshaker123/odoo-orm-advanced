@@ -1,0 +1,60 @@
+<odoo>
+
+    <template id="portal_my_home_tasks" inherit_id="project.portal_my_home" priority="50">
+
+        <xpath expr="//div[@id='portal_service_category']" position="inside">
+
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/project/static/src/img/tasks.svg'"/>
+                <t t-set="title">My Tasks</t>
+                <t t-set="text">View and follow up your assigned tasks</t>
+                <t t-set="url" t-value="'/my/tasks'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+
+        </xpath>
+
+    </template>
+
+
+    <template id="portal_my_tasks" name="My Tasks">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <div class="o_pt_portal_tasks">
+                <section class="o_pt_tasks_hero mb-4">
+                    <div class="o_pt_tasks_hero_content">
+                        <span class="o_pt_tasks_eyebrow">Project Workspace</span>
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                            <div>
+                                <h1 class="o_pt_tasks_title mb-2">My Tasks</h1>
+                                <p class="o_pt_tasks_subtitle mb-0">
+                                    Review your assigned and shared tasks in one organized place.
+                                </p>
+                            </div>
+                            <div class="o_pt_tasks_badge">
+                                <span class="o_pt_tasks_badge_value" t-out="task_count_total"/>
+                                <span class="o_pt_tasks_badge_label">Visible Tasks</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">My Tasks</t>
+                </t>
+
+                <t t-if="not grouped_tasks">
+                    <div class="alert alert-info o_pt_empty_state" role="alert">
+                        No tasks are available for this account yet.
+                    </div>
+                </t>
+
+                <div t-if="grouped_tasks" class="o_pt_tasks_list_wrap">
+                    <t t-call="project.portal_tasks_list"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
