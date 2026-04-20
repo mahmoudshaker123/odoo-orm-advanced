@@ -30,6 +30,7 @@ class Property(models.Model):
     active = fields.Boolean(default=True)
     create_time = fields.Datetime(default=fields.Datetime.now)
     next_time = fields.Datetime(compute='_compute_next_time')
+    image = fields.Binary("Image", attachment=True)
 
     garden_orientation = fields.Selection(
         [
@@ -113,6 +114,10 @@ class Property(models.Model):
         for rec in self:
             rec.create_history_record(rec.state, 'closed')
             rec.state= 'closed'
+
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return self.ref or self.name or "property"
 
 
     def check_expected_selling_date(self):

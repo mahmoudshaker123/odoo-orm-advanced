@@ -52,6 +52,8 @@
                     <widget name="web_ribbon" title="Sold" bg_color="text-bg-success" invisible="state !='sold'"/>
 
                     <div class="oe_title">
+                            <field name="image" widget="image" class="oe_avatar"/>
+
                         <label for="ref"/>
                         <h1>
                             <field name="ref"/>
