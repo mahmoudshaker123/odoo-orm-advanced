@@ -40,7 +40,7 @@
 
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">My Real Estate</t>
-                 <t t-set="default_url" t-value="'/my/realestate'"/>
+                <t t-set="default_url" t-value="'/my/realestate'"/>
                 <t t-set="searchbar_inputs" t-value="searchbar_inputs"/>
                 <t t-set="search_in" t-value="search_in"/>
                 <t t-set="search" t-value="search"/>
@@ -55,8 +55,8 @@
             </t>
 
             <a href="/my/realestate/create" class="btn btn-primary mb-3">
-    + Create Property
-</a>
+                + Create Property
+            </a>
             <t t-call="portal.portal_table">
 
                 <thead>
@@ -70,42 +70,43 @@
                 </thead>
 
                 <tbody>
-<t t-foreach="grouped_data.items()" t-as="group">
+                    <t t-foreach="grouped_data.items()" t-as="group">
 
-    <tr class="table-secondary">
-        <td colspan="5">
-            <strong>
-                <t t-out="group[0]"/>
-            </strong>
-        </td>
-    </tr>
+                        <tr class="table-secondary">
+                            <td colspan="5">
+                                <strong>
+                                    <t t-out="group[0]"/>
+                                </strong>
+                            </td>
+                        </tr>
 
-    <t t-foreach="group[1]" t-as="o">
-        <tr>
-            <td class="text-center">
-                <a t-att-href="'/my/realestate/%s' % o.id">
-                    <t t-out="o.ref"/>
-                </a>
-            </td>
-            <td class="text-center">
-                <t t-out="o.name"/>
-            </td>
-            <td class="text-center">
-                <img t-if="o.image"
-                     t-att-src="'/web/image/property/%s/image' % o.id"
-                     style="width:60px; height:60px; object-fit:cover;"
-                     class="rounded"/>
-            </td>
-            <td class="text-center">
-                <t t-out="o.owner_id.name"/>
-            </td>
-            <td class="text-center">
-                <t t-out="o.selling_price"/>
-            </td>
-        </tr>
-    </t>
+                        <t t-foreach="group[1]" t-as="o">
+                            <tr>
+                                <td class="text-center">
+                                    <a t-att-href="'/my/realestate/%s' % o.id">
+                                        <t t-out="o.ref"/>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <t t-out="o.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <img t-if="o.image"
+                                         t-att-src="'/web/image/property/%s/image' % o.id"
+                                         style="width:60px; height:60px; object-fit:cover;"
+                                         class="rounded"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-out="o.owner_id.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-out="o.selling_price"/>
+                                </td>
+                            </tr>
+                        </t>
 
-</t>                </tbody>
+                    </t>
+                </tbody>
 
             </t>
         </t>
@@ -116,9 +117,9 @@
         <t t-call="portal.portal_layout">
 
             <div class="container mt-4">
-                      <a href="/my/realestate/create" class="btn btn-primary mb-3">
-    + Create Property
-</a>
+                <a href="/my/realestate/create" class="btn btn-primary mb-3">
+                    + Create Property
+                </a>
                 <div class="d-flex justify-content-between mb-3">
 
                     <div>
@@ -188,22 +189,22 @@
                         </div>
 
                         <div class="row mb-3">
-    <div class="col-4">
-        <strong>Available From</strong>
-    </div>
-    <div class="col-8">
-<t t-out="property.date_availability" t-options="{'widget': 'date'}"/>
-    </div>
-</div>
+                            <div class="col-4">
+                                <strong>Available From</strong>
+                            </div>
+                            <div class="col-8">
+                                <t t-out="property.date_availability" t-options="{'widget': 'date'}"/>
+                            </div>
+                        </div>
 
-<div class="row mb-3">
-    <div class="col-4">
-        <strong>Description</strong>
-    </div>
-    <div class="col-8">
-        <t t-out="property.description"/>
-    </div>
-</div>
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <strong>Description</strong>
+                            </div>
+                            <div class="col-8">
+                                <t t-out="property.description"/>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -222,63 +223,74 @@
     </template>
 
     <template id="create_property_form">
-    <t t-call="portal.portal_layout">
-<t t-if="error">
-    <div class="alert alert-danger">
-        <t t-esc="error"/>
-    </div>
-</t>
-        <div class="container mt-4">
-            <h2>Create Property</h2>
-
-            <form action="/my/realestate/create/submit" method="post">
-
-                <!-- CSRF -->
-                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-                <div class="mb-3">
-                    <label>Name</label>
-<input type="text" name="name" class="form-control"
-       t-att-value="values.get('name') if values else ''"/>
+        <t t-call="portal.portal_layout">
+            <t t-if="error">
+                <div class="alert alert-danger">
+                    <t t-esc="error"/>
                 </div>
+            </t>
+            <div class="container mt-4">
+                <h2>Create Property</h2>
+
+                <form action="/my/realestate/create/submit" method="post">
+
+                    <!-- CSRF -->
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control"
+                               t-att-value="values.get('name') if values else ''"/>
+                    </div>
 
 
-                <div class="mb-3">
-                    <label>Selling Price</label>
-                    <input type="number" name="selling_price" class="form-control"/>
-                </div>
-                <div class="mb-3">
-    <label>Postcode</label>
-    <input type="text" name="postcode" class="form-control" required="1"/>
-</div>
-                <div class="mb-3">
-    <label>Available From</label>
-    <input type="date" name="date_availability" class="form-control"/>
-</div>
+                    <div class="mb-3">
+                        <label>Selling Price</label>
+                        <input type="number" name="selling_price" class="form-control"
+                               t-att-value="values.get('selling_price') if values else ''"/>
+                    </div>
+                    <div class="mb-3">
+                        <label>Bedrooms</label>
+                        <input type="number" name="bedrooms" class="form-control" min="1" required="1"
+                               t-att-value="values.get('bedrooms') if values else ''"/>
+                    </div>
+                    <div class="mb-3">
+                        <label>Postcode</label>
+                        <input type="text" name="postcode" class="form-control" required="1"
+                               t-att-value="values.get('postcode') if values else ''"/>
+                    </div>
+                    <div class="mb-3">
+                        <label>Available From</label>
+                        <input type="date" name="date_availability" class="form-control"
+                               t-att-value="values.get('date_availability') if values else ''"/>
+                    </div>
 
-<div class="mb-3">
-    <label>Description</label>
-    <textarea name="description" class="form-control" rows="4"></textarea>
-</div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="4">
+                            <t t-esc="values.get('description') if values else ''"/>
+                        </textarea>
+                    </div>
 
 
-              <div class="mb-3">
-    <label>Owner</label>
-    <select name="owner_id" class="form-control">
-        <t t-foreach="owners" t-as="owner">
-            <option t-att-value="owner.id">
-                <t t-esc="owner.name"/>
-            </option>
+                    <div class="mb-3">
+                        <label>Owner</label>
+                        <select name="owner_id" class="form-control">
+                            <t t-foreach="owners" t-as="owner">
+                                <option t-att-value="owner.id"
+                                        t-att-selected="'selected' if values and str(owner.id) == str(values.get('owner_id') or '') else None">
+                                    <t t-esc="owner.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                </form>
+            </div>
+
         </t>
-    </select>
-</div>
-                <button type="submit" class="btn btn-primary">
-                    Save
-                </button>
-
-            </form>
-        </div>
-
-    </t>
-</template>
+    </template>
 </odoo>

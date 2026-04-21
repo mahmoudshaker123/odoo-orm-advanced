@@ -1,18 +1,32 @@
-from odoo.addons.portal.controllers.portal import CustomerPortal , pager
-from odoo.http import request
+import logging
+
 from odoo import http
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager
+from odoo.exceptions import UserError, ValidationError
+from odoo.http import request
+
+_logger = logging.getLogger(__name__)
+
 
 class RealEstatePortal(CustomerPortal):
 
+    def _get_create_form_values(self, values=None, error=None):
+        return {
+            'page_name': 'real_estate_create',
+            'owners': request.env['owner'].sudo().search([]),
+            'values': values or {},
+            'error': error,
+        }
+
     def _prepare_home_portal_values(self, counters):
-        rtn = super(RealEstatePortal ,self)._prepare_home_portal_values(counters)
-        print('inside _prepare_home_portal_values method >>>>>>>>>>>>>>>',rtn)
+        rtn = super(RealEstatePortal, self)._prepare_home_portal_values(counters)
+        print('inside _prepare_home_portal_values method >>>>>>>>>>>>>>>', rtn)
         rtn['real_estate_counts'] = request.env['property'].search_count([])
-        print('val>>>>>>>>>>>>>>>>>>>>>',rtn)
+        print('val>>>>>>>>>>>>>>>>>>>>>', rtn)
         return rtn
 
     @http.route(['/my/realestate', '/my/realestate/page/<int:page>'], type='http', auth="user", website=True)
-    def RealEstateListView(self, page=1, sortby=None, search=None, search_in='all',groupby='none', **kw):
+    def RealEstateListView(self, page=1, sortby=None, search=None, search_in='all', groupby='none', **kw):
         real_estate_obj = request.env['property']
 
         searchbar_groupby = {
@@ -22,8 +36,6 @@ class RealEstatePortal(CustomerPortal):
 
         if not groupby:
             groupby = 'none'
-
-
 
         searchbar_inputs = {
             'all': {'label': 'Search in All', 'input': 'all'},
@@ -60,7 +72,7 @@ class RealEstatePortal(CustomerPortal):
         step = 5
         total = real_estate_obj.search_count(domain)
 
-        pager_data  = pager(
+        pager_data = pager(
             url='/my/realestate',
             total=total,
             page=page,
@@ -94,7 +106,6 @@ class RealEstatePortal(CustomerPortal):
         else:
             grouped_data = {'All': records}
 
-
         values = {
             'grouped_data': grouped_data,
             'groupby': groupby,
@@ -109,10 +120,6 @@ class RealEstatePortal(CustomerPortal):
         }
 
         return request.render("real_estate_portal.real_estate_list_view_portal", values)
-
-
-
-
 
     @http.route(['/my/realestate/<model("property"):property_id>'], type='http', website=True, auth="user")
     def RealEstateFormView(self, property_id, **kw):
@@ -147,44 +154,93 @@ class RealEstatePortal(CustomerPortal):
 
     @http.route('/my/realestate/create', type='http', auth="user", website=True)
     def create_property_form(self, **kw):
-
-        owners = request.env['owner'].sudo().search([])
-
-        values = {
-            'page_name': 'real_estate_create',
-            'owners': owners,
-        }
-
-        return request.render("real_estate_portal.create_property_form", values)
+        return request.render(
+            "real_estate_portal.create_property_form",
+            self._get_create_form_values()
+        )
 
     @http.route('/my/realestate/create/submit', type='http', auth="user", website=True, methods=['POST'])
     def create_property_submit(self, **post):
+        values = dict(post)
+        property_env = request.env['property'].sudo()
+        owner_env = request.env['owner'].sudo()
 
-        owner_id = int(post.get('owner_id')) if post.get('owner_id') else False
+        try:
+            owner_id = int(post.get('owner_id')) if post.get('owner_id') else False
+        except (TypeError, ValueError):
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Invalid owner selected.")
+            )
 
-        name = post.get('name')
+        name = (post.get('name') or '').strip()
+        postcode = (post.get('postcode') or '').strip()
+        description = (post.get('description') or '').strip()
+        date_availability = post.get('date_availability') or False
 
-        existing = request.env['property'].sudo().search([
-            ('name', '=', name)
-        ], limit=1)
+        if not name:
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Property name is required.")
+            )
 
+        if not postcode:
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Postcode is required.")
+            )
+
+        existing = property_env.search([('name', '=', name)], limit=1)
         if existing:
-            owners = request.env['owner'].sudo().search([])
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "This property name is already used.")
+            )
 
-            return request.render("real_estate_portal.create_property_form", {
-                'error': '⚠️ الاسم ده مستخدم قبل كدا',
-                'owners': owners,
-                'values': post,
+        if owner_id and not owner_env.browse(owner_id).exists():
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Selected owner was not found.")
+            )
+
+        try:
+            selling_price = float(post.get('selling_price') or 0.0)
+            bedrooms = int(post.get('bedrooms') or 0)
+        except (TypeError, ValueError):
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Selling price and bedrooms must be valid numbers.")
+            )
+
+        if bedrooms <= 0:
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, "Bedrooms must be greater than zero.")
+            )
+
+        try:
+            property_env.create({
+                'name': name,
+                'selling_price': selling_price,
+                'owner_id': owner_id,
+                'date_availability': date_availability,
+                'description': description,
+                'postcode': postcode,
+                'bedrooms': bedrooms,
             })
-
-        request.env['property'].sudo().create({
-            'name': post.get('name'),
-            'selling_price': float(post.get('selling_price') or 0),
-            'owner_id': owner_id,
-            'date_availability': post.get('date_availability'),
-            'description': post.get('description'),
-            'postcode': post.get('postcode'),
-        })
+        except (ValidationError, UserError) as error:
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(values, str(error))
+            )
+        except Exception:
+            _logger.exception("Portal property creation failed for user %s", request.env.user.id)
+            return request.render(
+                "real_estate_portal.create_property_form",
+                self._get_create_form_values(
+                    values,
+                    "Unexpected error happened while creating the property."
+                )
+            )
 
         return request.redirect('/my/realestate')
-
